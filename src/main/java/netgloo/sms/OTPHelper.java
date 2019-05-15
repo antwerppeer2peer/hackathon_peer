@@ -36,16 +36,8 @@ public class OTPHelper {
 	public OTPHelper(@Value("${cache.expire_min}") long EXPIRE_MIN) {
 	     this.EXPIRE_MIN = EXPIRE_MIN;
 	     System.out.println("================== " + EXPIRE_MIN + "================== ");
-	}
-	
-	/**
-	 * <p>OTPHelper - Build Cache </p>
-	 */
-	public OTPHelper() {
-		log.info("--Inside OTPHelper---");
-		log.info("--Inside OTPHelper---"+EXPIRE_MIN);
-	
-		otpCache = CacheBuilder.newBuilder()
+	     
+	 	otpCache = CacheBuilder.newBuilder()
                 .expireAfterWrite(EXPIRE_MIN, TimeUnit.MINUTES)
                 .build(new CacheLoader<String, Integer>() {
                     @Override
@@ -61,7 +53,8 @@ public class OTPHelper {
 	 * @return
 	 */
 	public Integer generateOTP(String phoneNumber) {
-		log.info("------Inside generateOTP----------");
+		log.info("------Inside generateOTP {}----------",phoneNumber);
+		log.info("------Inside generateOTP {}----------",otpCache);
 	
 		Random random = new Random();
 	    int OTP = 100000 + random.nextInt(900000);
