@@ -6,7 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import netgloo.models.User;
+import netgloo.controllers.LoginController;
+import netgloo.dto.PersonDTO;
 import netgloo.models.UserDao;
 
 @SpringBootApplication
@@ -15,6 +16,10 @@ public class Application  implements CommandLineRunner {
 	
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	LoginController loginController;
+	
 
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
@@ -22,11 +27,17 @@ public class Application  implements CommandLineRunner {
 
 @Override
 public void run(String... arg0) throws Exception {
+	
+	PersonDTO personDTO = new PersonDTO();
+	personDTO.setEmailID("kkdhananjeyan@gmail.com");
+	personDTO.setAddress("Rue Saint Emily Jacqmain");
+	personDTO.setMobileNumber("+32465270695");
+	
+	String text = loginController.create(personDTO);
+	System.out.println(text);
+	
+	
 
-	User user = new User();
-	user.setEmail("23");
-	user.setName("Dhana");
-	userDao.save(user);
 }
 
 }
