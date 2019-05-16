@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PersonDetailDao extends CrudRepository<PersonDetail, Long> {
 	
-	
-
+	 public PersonDetail findByMobileNumber(String mobileNumber);
 }

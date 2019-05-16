@@ -74,8 +74,8 @@ public class OTPHelper {
 	 */
 	public boolean validateOTP(String phoneNumber,int OTP) throws ExecutionException {
 		log.info("-----Inside validateOTP----");
-		
 		boolean isOTPValid = Boolean.TRUE;
+		log.info("--------Found OTP in Cache {} -----------",otpCache.get(phoneNumber));
 		
 		if(otpCache.get(phoneNumber) ==  OTP) {
 			isOTPValid = Boolean.FALSE;
