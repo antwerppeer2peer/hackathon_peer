@@ -17,8 +17,8 @@ public class AccountDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="ACCOUNT_ID")
-	private long personID;
-	
+	private long accountID;
+
 	@Column(name="ACCOUNT_NUMBER")
 	private String accountNumber;
 	
@@ -29,17 +29,18 @@ public class AccountDetails {
 	private String iban;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "personID")
+	@JoinColumn(name = "PERSON_ID")
 	private PersonDetail personDetail;
 	
-	public long getPersonID() {
-		return personID;
+	public long getAccountID() {
+		return accountID;
 	}
 
-	public void setPersonID(long personID) {
-		this.personID = personID;
+	public void setAccountID(long accountID) {
+		this.accountID = accountID;
 	}
-
+	
+	
 	public String getAccountNumber() {
 		return accountNumber;
 	}

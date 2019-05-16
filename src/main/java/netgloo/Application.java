@@ -1,43 +1,45 @@
 package netgloo;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import netgloo.controllers.LoginController;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import netgloo.dto.AccountDetailDTO;
 import netgloo.dto.PersonDTO;
-import netgloo.models.UserDao;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "netgloo.*" })
-public class Application  implements CommandLineRunner {
+public class Application{
 	
-	@Autowired
-	UserDao userDao;
-	
-	@Autowired
-	LoginController loginController;
-	
-
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
+    
+    PersonDTO person = new PersonDTO();
+    person.setEmailID("kkdhananjeyan@gmail.com");
+    person.setAddress("Rue Saint Laurent");
+    person.setMobileNumber("+32465270695");
+    person.setAccountDetailDTO(new AccountDetailDTO());
+    person.getAccountDetailDTO().setBankName("BEO");
+    person.getAccountDetailDTO().setAccountNumber("BE78945");
+    person.getAccountDetailDTO().setIban("BE788");
+    
+    Gson gson = new GsonBuilder().create();
+    String json = gson.toJson(person);// obj is your object 
+    
+    System.out.println(json);
+    
+    PersonDTO person1 = new PersonDTO();
+    person1.setPersonID(234234);
+    person1.setOtp(234234);
+    
+    String jso1n = gson.toJson(person1);// obj is your object 
+    
+    System.out.println(jso1n);
+    
+    
+    
   }
-
-@Override
-public void run(String... arg0) throws Exception {
-	
-	PersonDTO personDTO = new PersonDTO();
-	personDTO.setEmailID("kkdhananjeyan@gmail.com");
-	personDTO.setAddress("Rue Saint Emily Jacqmain");
-	personDTO.setMobileNumber("+32465270695");
-	
-	String text = loginController.create(personDTO);
-	System.out.println(text);
-	
-	
-
-}
-
 }

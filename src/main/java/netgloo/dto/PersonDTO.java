@@ -1,7 +1,5 @@
 package netgloo.dto;
 
-import java.util.List;
-
 public class PersonDTO {
 	
 	private long personID;
@@ -9,7 +7,27 @@ public class PersonDTO {
 	private String emailID;
 	private String Address;
 	private Integer otp;
+	private String status;
+
+	private AccountDetailDTO accountDetailDTO;
 	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
+	public AccountDetailDTO getAccountDetailDTO() {
+		return accountDetailDTO;
+	}
+
+	public void setAccountDetailDTO(AccountDetailDTO accountDetailDTO) {
+		this.accountDetailDTO = accountDetailDTO;
+	}
+
 	public Integer getOtp() {
 		return otp;
 	}
@@ -18,7 +36,6 @@ public class PersonDTO {
 		this.otp = otp;
 	}
 
-	private List<AccountDetailDTO> accountDetailDTOs;
 	
 	public long getPersonID() {
 		return personID;
@@ -52,11 +69,5 @@ public class PersonDTO {
 		Address = address;
 	}
 
-	public List<AccountDetailDTO> getAccountDetailDTOs() {
-		return accountDetailDTOs;
-	}
 
-	public void setAccountDetailDTOs(List<AccountDetailDTO> accountDetailDTOs) {
-		this.accountDetailDTOs = accountDetailDTOs;
-	}
 }

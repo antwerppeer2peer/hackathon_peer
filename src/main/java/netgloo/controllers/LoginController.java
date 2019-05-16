@@ -4,14 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import netgloo.dto.LoginResponseDTO;
 import netgloo.dto.PersonDTO;
-import netgloo.models.PersonDetail;
-import netgloo.models.PersonDetailDao;
-import netgloo.sms.OTPHelper;
-import netgloo.sms.SMSHelper;
+import netgloo.service.impl.RegisterService;
 
 
 /**
@@ -21,72 +21,61 @@ import netgloo.sms.SMSHelper;
  *
  */
 @Controller
+@RequestMapping("/register")
 public class LoginController {
 	
 	public static final Logger log = LoggerFactory.getLogger(LoginController.class);
 	
 	@Autowired
-	PersonDetailDao personDetailDao;
-	
-	@Autowired
-	OTPHelper otpHelper;
-	
-	@Autowired
-	SMSHelper smsHelper;
+	RegisterService registerService;
 	
 	@RequestMapping("/create")
 	@ResponseBody
-	public String create(PersonDTO personDTO) {
+	public PersonDTO create(@RequestBody PersonDTO personDTO) {
 		
-		Integer otp;
+		PersonDTO responsePersonDTO = null;
 		
 		try {
-			
-			if(personDTO != null) {
-				
-				PersonDetail personDetail = new PersonDetail();
-				personDetail.setEmailID(personDTO.getEmailID());
-				personDetail.setAddress(personDTO.getAddress());
-				personDetail.setMobileNumber(personDTO.getMobileNumber());
-				personDetail.setValidated("N");
-				personDetail = personDetailDao.save(personDetail);
-				
-				log.info("----------Person Detail Created {} --------------",personDetail.getPersonID());
-				
-				otp = otpHelper.generateOTP(String.valueOf(personDetail.getPersonID()));
-				
-				smsHelper.send("Hey, Antwerp P2P Welcomes, Your OTP is :"+String.valueOf(otp), personDTO.getMobileNumber());
-			}
-			
+			responsePersonDTO = registerService.register(personDTO);
 		}catch(Exception e) {
-			throw e;
+			responsePersonDTO = new PersonDTO();
+			responsePersonDTO.setStatus("NOK");
 		}
 	
-		return "Ok";
+		return responsePersonDTO;
 	}
 	
 	@RequestMapping("/validate")
 	@ResponseBody
-	public String validate(PersonDTO personDTO) {
+	public PersonDTO validate(@RequestBody PersonDTO personDTO) {
+		
+		PersonDTO validatePersonDTO = new PersonDTO();
 		
 		try {
-			
-			if(personDTO != null) {
-				
-				if(personDTO.getOtp() != 0 && otpHelper.validateOTP(String.valueOf(personDTO.getPersonID()), personDTO.getOtp())) {
-					
-					PersonDetail personDetail = personDetailDao.findOne(personDTO.getPersonID());
-					personDetail.setValidated("Y");
-					personDetail = personDetailDao.save(personDetail);
-				}else {
-					return "Please Verify your Nunmber";
-				}
-			}
-			
+			registerService.validate(personDTO);
 		}catch(Exception e) {
-			return "Error While Registation Process";
+			validatePersonDTO.setStatus("NOK");
 		}
+		
+		validatePersonDTO.setStatus("Ok");
+		return validatePersonDTO;
+	}
 	
-		return "Registration Completed Successfully";
+	@RequestMapping("/login")
+	@ResponseBody
+	public LoginResponseDTO login(@RequestParam String mobileNumber) {
+		log.info("----Login {} ",mobileNumber);
+		
+		LoginResponseDTO loginResponseDTO = null;
+		
+		try {
+			loginResponseDTO = registerService.login("+"+mobileNumber);
+		}catch(Exception e) {
+			loginResponseDTO = new LoginResponseDTO();
+			loginResponseDTO.setPersonDTO(new PersonDTO());
+			loginResponseDTO.getPersonDTO().setStatus("NOK");
+		}
+			
+		return loginResponseDTO;
 	}
 }
