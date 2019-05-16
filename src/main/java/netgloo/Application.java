@@ -9,13 +9,16 @@ import com.google.gson.GsonBuilder;
 
 import netgloo.dto.AccountDetailDTO;
 import netgloo.dto.PersonDTO;
+import netgloo.dto.TransactionDetailDTO;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "netgloo.*" })
 public class Application{
 	
   public static void main(String[] args) {
+	  
     SpringApplication.run(Application.class, args);
+    
     
     PersonDTO person = new PersonDTO();
     person.setEmailID("kkdhananjeyan@gmail.com");
@@ -39,7 +42,13 @@ public class Application{
     
     System.out.println(jso1n);
     
+    TransactionDetailDTO transactionDetailDTO = new TransactionDetailDTO();
+    transactionDetailDTO.setCreditorAccount("BE78945");
+    transactionDetailDTO.setDebtorAccount("BE78945");
+    transactionDetailDTO.setTransactionAmount(78);
     
+    String transactionDetailDTOjson = gson.toJson(transactionDetailDTO);// obj is your object 
     
+    System.out.println(transactionDetailDTOjson);
   }
 }
