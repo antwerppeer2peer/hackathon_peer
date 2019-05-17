@@ -9,9 +9,12 @@ import org.springframework.stereotype.Component;
 
 import com.mysql.jdbc.StringUtils;
 
+import netgloo.convertor.DTOToDatabaseConvertor;
 import netgloo.dto.AccountDetailDTO;
 import netgloo.dto.LoginResponseDTO;
 import netgloo.dto.PersonDTO;
+import netgloo.email.EmaiHelper;
+import netgloo.email.EmailInputData;
 import netgloo.models.AccountDetails;
 import netgloo.models.AccountDetailsDao;
 import netgloo.models.PersonDetail;
@@ -36,6 +39,9 @@ public class RegisterService {
 	@Autowired
 	SMSHelper smsHelper;
 	
+	@Autowired
+	EmaiHelper emaiHelper;
+	
 	/**
 	 * 
 	 * @param personDTO
@@ -50,17 +56,11 @@ public class RegisterService {
 		
 		if(personDTO != null && personDetailExit == null) {
 			
-			PersonDetail personDetail = new PersonDetail();
-			personDetail.setEmailID(personDTO.getEmailID());
-			personDetail.setAddress(personDTO.getAddress());
-			personDetail.setMobileNumber(personDTO.getMobileNumber());
+			PersonDetail personDetail = DTOToDatabaseConvertor.personDetail(personDTO);
 			personDetail.setValidated("N");
 			personDetail = personDetailDao.save(personDetail);
 			
-			AccountDetails accountDetails = new AccountDetails();
-			accountDetails.setAccountNumber(personDTO.getAccountDetailDTO().getAccountNumber());
-			accountDetails.setBankName(personDTO.getAccountDetailDTO().getBankName());
-			accountDetails.setIban(personDTO.getAccountDetailDTO().getIban());
+			AccountDetails accountDetails = DTOToDatabaseConvertor.accountDetail(personDTO);
 			accountDetails.setPersonDetail(personDetail);
 			accountDetails = accountDetailsDao.save(accountDetails);
 			
@@ -68,6 +68,12 @@ public class RegisterService {
 			
 			Integer otp = otpHelper.generateOTP(String.valueOf(personDetail.getPersonID()));
 			//smsHelper.send("Hey, Antwerp P2P Welcomes, Your OTP is :"+String.valueOf(otp), personDTO.getMobileNumber());
+			
+			EmailInputData emailInputData = new EmailInputData();
+			emailInputData.setToEmail(personDTO.getEmailID());
+			emailInputData.setSubject("Welcome for P2P App - OTP ");
+			emailInputData.setContent("Hello,  Your OTP !!!"+otp);
+			emaiHelper.sendEmail(emailInputData);
 			
 			log.info("---OTP {} ",otp);
 			
@@ -80,7 +86,7 @@ public class RegisterService {
 		
 		return responsePersonDTO;
 	}
-	
+
 	/**
 	 * 
 	 * @param personDTO
