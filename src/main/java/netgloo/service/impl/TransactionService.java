@@ -1,6 +1,5 @@
 package netgloo.service.impl;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import netgloo.convertor.DTOToDatabaseConvertor;
 import netgloo.dto.TransactionDetailDTO;
 import netgloo.models.PersonDetail;
 import netgloo.models.PersonDetailDao;
@@ -39,15 +39,8 @@ public class TransactionService {
 		
 		if(isDetailsCorrect(transactionDetailDTO)) {
 			
-			TransactionDetails transactionDetails = new TransactionDetails();
-			transactionDetails.setCreditorAccount(transactionDetailDTO.getCreditorAccount());
-			transactionDetails.setDebtorAccount(transactionDetailDTO.getDebtorAccount());
-			transactionDetails.setCreditorPersonID(transactionDetailDTO.getCreditorPersonID());
-			transactionDetails.setDebtorPersonID(transactionDetailDTO.getDebtorPersonID());
-			transactionDetails.setTransactionAmount(transactionDetailDTO.getTransactionAmount());
+			TransactionDetails transactionDetails = DTOToDatabaseConvertor.transactionDetails(transactionDetailDTO);
 			transactionDetails.setStatus("100");
-			transactionDetails.setTransactionDate(new Date(System.currentTimeMillis()));
-			
 			transactionDetailsDao.save(transactionDetails);
 			resonseText= "OK";
 		}
