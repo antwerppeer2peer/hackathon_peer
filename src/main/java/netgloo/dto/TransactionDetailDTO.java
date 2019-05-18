@@ -4,9 +4,9 @@ public class TransactionDetailDTO {
 	
 	private Integer transactionID;
 	
-	private String debtorAccount;
+	private String debtorMobileNumber;
 	
-	private String creditorAccount;
+	private String creditorMobileNumber;
 	
 	private long debtorPersonID;
 	
@@ -24,22 +24,6 @@ public class TransactionDetailDTO {
 
 	public void setTransactionID(Integer transactionID) {
 		this.transactionID = transactionID;
-	}
-
-	public String getDebtorAccount() {
-		return debtorAccount;
-	}
-
-	public void setDebtorAccount(String debtorAccount) {
-		this.debtorAccount = debtorAccount;
-	}
-
-	public String getCreditorAccount() {
-		return creditorAccount;
-	}
-
-	public void setCreditorAccount(String creditorAccount) {
-		this.creditorAccount = creditorAccount;
 	}
 
 	public long getDebtorPersonID() {
@@ -80,6 +64,22 @@ public class TransactionDetailDTO {
 
 	public void setTransactionAmount(Integer transactionAmount) {
 		this.transactionAmount = transactionAmount;
+	}
+
+	public String getDebtorMobileNumber() {
+		return debtorMobileNumber;
+	}
+
+	public void setDebtorMobileNumber(String debtorMobileNumber) {
+		this.debtorMobileNumber = debtorMobileNumber;
+	}
+
+	public String getCreditorMobileNumber() {
+		return creditorMobileNumber;
+	}
+
+	public void setCreditorMobileNumber(String creditorMobileNumber) {
+		this.creditorMobileNumber = creditorMobileNumber;
 	}
 
 	

@@ -18,11 +18,11 @@ public class TransactionDetails {
 	@Column(name="TRANSACTION_ID")
 	private long transactionID;
 	
-	@Column(name="DEBTOR_ACCNT")
-	private String debtorAccount;
+	@Column(name="DEBTOR_MOBILE")
+	private String debtorMobileNumber;
 	
-	@Column(name="CREDITOR_ACCNT")
-	private String creditorAccount;
+	@Column(name="CREDITOR_MOBILE")
+	private String creditorMobileNumber;
 	
 	@Column(name="DEBTOR_PERSON_ID")
 	private long debtorPersonID;
@@ -45,22 +45,6 @@ public class TransactionDetails {
 
 	public void setTransactionID(long transactionID) {
 		this.transactionID = transactionID;
-	}
-
-	public String getDebtorAccount() {
-		return debtorAccount;
-	}
-
-	public void setDebtorAccount(String debtorAccount) {
-		this.debtorAccount = debtorAccount;
-	}
-
-	public String getCreditorAccount() {
-		return creditorAccount;
-	}
-
-	public void setCreditorAccount(String creditorAccount) {
-		this.creditorAccount = creditorAccount;
 	}
 
 	public long getDebtorPersonID() {
@@ -101,6 +85,22 @@ public class TransactionDetails {
 
 	public void setTransactionAmount(Integer transactionAmount) {
 		this.transactionAmount = transactionAmount;
+	}
+
+	public String getDebtorMobileNumber() {
+		return debtorMobileNumber;
+	}
+
+	public void setDebtorMobileNumber(String debtorMobileNumber) {
+		this.debtorMobileNumber = debtorMobileNumber;
+	}
+
+	public String getCreditorMobileNumber() {
+		return creditorMobileNumber;
+	}
+
+	public void setCreditorMobileNumber(String creditorMobileNumber) {
+		this.creditorMobileNumber = creditorMobileNumber;
 	}
 
 	

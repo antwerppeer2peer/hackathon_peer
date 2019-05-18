@@ -30,10 +30,22 @@ public class PersonDetail {
 	
 	@Column(name="ADDRESS")
 	private String Address;
-
-	@Column(name="VALIDATED")
-	private String validated;
 	
+	@Column(name="NAME")
+	private String name	;
+	
+	@Column(name="VALIDATED")
+	private String validated;	
+	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getValidated() {
 		return validated;
 	}
