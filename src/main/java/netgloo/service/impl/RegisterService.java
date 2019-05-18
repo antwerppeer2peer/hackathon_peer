@@ -17,6 +17,8 @@ import netgloo.email.EmaiHelper;
 import netgloo.email.EmailInputData;
 import netgloo.models.AccountDetails;
 import netgloo.models.AccountDetailsDao;
+import netgloo.models.BNPPFAccountDetail;
+import netgloo.models.INGAccountDetail;
 import netgloo.models.PersonDetail;
 import netgloo.models.PersonDetailDao;
 import netgloo.sms.OTPHelper;
@@ -42,6 +44,12 @@ public class RegisterService {
 	@Autowired
 	EmaiHelper emaiHelper;
 	
+	@Autowired
+	INGAPIServiceProvider ingapiServiceProvider;
+	
+	@Autowired
+	BNPPFAPIServiceProvider bnppfapiServiceProvider;
+	
 	/**
 	 * 
 	 * @param personDTO
@@ -53,6 +61,25 @@ public class RegisterService {
 		Iterable<PersonDetail> presonDetailList = personDetailDao.findAll();
 		PersonDetail personDetailExit = getPerson(presonDetailList,personDTO.getMobileNumber());
 		log.info("---Person Detail Data {} ",personDetailExit);
+		
+		boolean isAccountValid = isAccountValid(personDTO);
+
+		if(isAccountValid) {
+			processRegistration(personDTO, responsePersonDTO, personDetailExit);	
+		}else {
+			responsePersonDTO.setStatus("Account is not Valid!!!!");
+		}
+		
+		return responsePersonDTO;
+	}
+
+	/**
+	 * 
+	 * @param personDTO
+	 * @param responsePersonDTO
+	 * @param personDetailExit
+	 */
+	private void processRegistration(PersonDTO personDTO, PersonDTO responsePersonDTO, PersonDetail personDetailExit) {
 		
 		if(personDTO != null && personDetailExit == null) {
 			
@@ -67,12 +94,14 @@ public class RegisterService {
 			log.info("----------Person Detail Created {} --------------",personDetail.getPersonID());
 			
 			Integer otp = otpHelper.generateOTP(String.valueOf(personDetail.getPersonID()));
-			//smsHelper.send("Hey, Antwerp P2P Welcomes, Your OTP is :"+String.valueOf(otp), personDTO.getMobileNumber());
+			String otpMessage = "Hello, Your OTP for PeerPay Registration :"+ String.valueOf(otp) + " with " + personDTO.getMobileNumber() +". It will be valid for next 5 min.";
+			
+			smsHelper.send(otpMessage, personDTO.getMobileNumber());
 			
 			EmailInputData emailInputData = new EmailInputData();
 			emailInputData.setToEmail(personDTO.getEmailID());
-			emailInputData.setSubject("Welcome for P2P App - OTP ");
-			emailInputData.setContent("Hello,  Your OTP !!!"+otp);
+			emailInputData.setSubject("OTP for MobPay Registration : Reg");
+			emailInputData.setContent(otpMessage);
 			emaiHelper.sendEmail(emailInputData);
 			
 			log.info("---OTP {} ",otp);
@@ -83,8 +112,39 @@ public class RegisterService {
 			responsePersonDTO.setPersonID(personDetailExit.getPersonID());
 			responsePersonDTO.setStatus("NOK!!!, Already Registered");
 		}
+	}
+
+	/**
+	 * 
+	 * @param personDTO
+	 * @return
+	 */
+	private boolean isAccountValid(PersonDTO personDTO) {
 		
-		return responsePersonDTO;
+		ExternalAPIInputData externalAPIInputData = new ExternalAPIInputData();
+		externalAPIInputData.setAccountNumber(personDTO.getAccountDetailDTO().getAccountNumber());
+		externalAPIInputData.setIban(personDTO.getAccountDetailDTO().getIban());
+		
+		switch(personDTO.getAccountDetailDTO().getBankName()) {
+		
+		case "ING":
+			INGAccountDetail ingAccountDetail = ingapiServiceProvider.getAccountDetail(externalAPIInputData);
+			if(ingAccountDetail != null) {
+				return true;
+			}
+			break;
+		case "BNPPF":
+			BNPPFAccountDetail bnppfAccountDetail = bnppfapiServiceProvider.getAccountDetail(externalAPIInputData);
+			if(bnppfAccountDetail != null) {
+				return true;
+			}
+			break;
+			
+			default:
+				return false;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -129,11 +189,14 @@ public class RegisterService {
 				PersonDTO personDTO = new PersonDTO();
 				personDTO.setPersonID(personDetail.getPersonID());
 				personDTO.setMobileNumber(personDetail.getMobileNumber());
+				personDTO.setEmailID(personDetail.getEmailID());
+				personDTO.setName(personDetail.getName());
 				personDTO.setStatus("Ok");
 				
 				AccountDetailDTO accountDetailDTO = new AccountDetailDTO();
-				accountDetailDTO.setAccountNumber(personDetail.getAccountDetails().iterator().next().getAccountNumber());
-				accountDetailDTO.setIban(personDetail.getAccountDetails().iterator().next().getIban());
+				accountDetailDTO.setAccountNumber("*************"+personDetail.getAccountDetails().iterator().next().getAccountNumber().substring(personDetail.getAccountDetails().iterator().next().getAccountNumber().length()-3, personDetail.getAccountDetails().iterator().next().getAccountNumber().length()));
+				accountDetailDTO.setBankName(personDetail.getAccountDetails().iterator().next().getBankName());
+				accountDetailDTO.setIban("*************"+personDetail.getAccountDetails().iterator().next().getIban().substring(personDetail.getAccountDetails().iterator().next().getIban().length()-4, personDetail.getAccountDetails().iterator().next().getIban().length()));
 				personDTO.setAccountDetailDTO(accountDetailDTO);
 				
 				loginResponseDTO.setPersonDTO(personDTO);

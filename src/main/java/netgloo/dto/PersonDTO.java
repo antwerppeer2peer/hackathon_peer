@@ -7,9 +7,17 @@ public class PersonDTO {
 	private String emailID;
 	private String Address;
 	private Integer otp;
+	private String name;
 	private String status;
-
 	private AccountDetailDTO accountDetailDTO;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public String getStatus() {
 		return status;
@@ -68,6 +76,4 @@ public class PersonDTO {
 	public void setAddress(String address) {
 		Address = address;
 	}
-
-
 }

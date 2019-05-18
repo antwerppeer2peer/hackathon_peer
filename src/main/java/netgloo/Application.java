@@ -1,7 +1,11 @@
 package netgloo;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.google.gson.Gson;
@@ -10,17 +14,40 @@ import com.google.gson.GsonBuilder;
 import netgloo.dto.AccountDetailDTO;
 import netgloo.dto.PersonDTO;
 import netgloo.dto.TransactionDetailDTO;
+import netgloo.service.impl.BNPPFAPIServiceProvider;
+import netgloo.service.impl.INGAPIServiceProvider;
 
 @SpringBootApplication
 @ComponentScan(basePackages = { "netgloo.*" })
-public class Application{
+public class Application extends SpringBootServletInitializer{
+	
+	@Autowired
+	INGAPIServiceProvider ingapiServiceProvider;
+	
+	@Autowired
+	BNPPFAPIServiceProvider bnppfapiServiceProvider;
+	
 	
   public static void main(String[] args) {
-	  
-    SpringApplication.run(Application.class, args);
+
+	  SpringApplication.run(Application.class, args);
     
-    
-    PersonDTO person = new PersonDTO();
+	  dummyJsonProvider();
+  }
+  
+  @PostConstruct
+  public void listen() { 
+	// ingapiServiceProvider.addAccountDetails();
+	// bnppfapiServiceProvider.addAccountDetails();
+  }
+
+  /**
+   * 
+   */
+  @PostConstruct
+private static void dummyJsonProvider() {
+	
+	PersonDTO person = new PersonDTO();
     person.setEmailID("kkdhananjeyan@gmail.com");
     person.setAddress("Rue Saint Laurent");
     person.setMobileNumber("+32465270695");
@@ -43,12 +70,12 @@ public class Application{
     System.out.println(jso1n);
     
     TransactionDetailDTO transactionDetailDTO = new TransactionDetailDTO();
-    transactionDetailDTO.setCreditorAccount("BE78945");
-    transactionDetailDTO.setDebtorAccount("BE78945");
+    transactionDetailDTO.setCreditorMobileNumber("BE78945");
+    transactionDetailDTO.setDebtorMobileNumber("BE78945");
     transactionDetailDTO.setTransactionAmount(78);
     
     String transactionDetailDTOjson = gson.toJson(transactionDetailDTO);// obj is your object 
     
     System.out.println(transactionDetailDTOjson);
-  }
+}
 }

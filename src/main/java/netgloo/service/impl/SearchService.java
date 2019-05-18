@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import netgloo.dto.AccountDetailDTO;
 import netgloo.dto.PersonDTO;
 import netgloo.models.PersonDetail;
 import netgloo.models.PersonDetailDao;
@@ -33,12 +32,8 @@ public class SearchService {
 			PersonDTO personDTO = new PersonDTO();
 			personDTO.setPersonID(personDetail.getPersonID());
 			personDTO.setMobileNumber(personDetail.getMobileNumber());
+			personDTO.setName(personDetail.getName());
 			personDTO.setStatus("Ok");
-			
-			AccountDetailDTO accountDetailDTO = new AccountDetailDTO();
-			accountDetailDTO.setAccountNumber(personDetail.getAccountDetails().iterator().next().getAccountNumber());
-			accountDetailDTO.setIban(personDetail.getAccountDetails().iterator().next().getIban());
-			personDTO.setAccountDetailDTO(accountDetailDTO);
 			listOfPersonDTO.add(personDTO);
 		}
 		return listOfPersonDTO;
